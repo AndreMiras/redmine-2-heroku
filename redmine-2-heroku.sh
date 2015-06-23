@@ -39,6 +39,6 @@ git add -A
 git commit -m "patch for Heroku"
 git push heroku master
 heroku run rake db:migrate
-heroku run rake redmine:load_default_data
+heroku run REDMINE_LANG=en rake redmine:load_default_data
 heroku info
 heroku open
