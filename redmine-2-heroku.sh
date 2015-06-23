@@ -26,8 +26,9 @@ bundle exec rake generate_secret_token
 
 # Deploy on Heroku
 if [[ -z "$HEROKU_PROJECT" ]]
-    heroku create
 then
+    heroku create
+else
     # this will fail if this name is already taken
     # but, next command will success if you own the application
     heroku create $HEROKU_PROJECT
