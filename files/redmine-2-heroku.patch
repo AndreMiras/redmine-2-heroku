@@ -1,0 +1,100 @@
+diff --git a/.gitignore b/.gitignore
+index 5e0f888..1610377 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,11 +1,7 @@
+ /.project
+ /.loadpath
+ /config/additional_environment.rb
+-/config/configuration.yml
+ /config/database.yml
+-/config/email.yml
+-/config/initializers/session_store.rb
+-/config/initializers/secret_token.rb
+ /coverage
+ /db/*.db
+ /db/*.sqlite3
+@@ -16,7 +12,6 @@
+ /log/*.log*
+ /log/mongrel_debug
+ /public/dispatch.*
+-/public/plugin_assets
+ /tmp/*
+ /tmp/cache/*
+ /tmp/pdf/*
+@@ -29,6 +24,4 @@
+ *.rbc
+ 
+ /.bundle
+-/Gemfile.lock
+-/Gemfile.local
+ 
+diff --git a/Gemfile b/Gemfile
+index 3b4d378..c4f1696 100644
+--- a/Gemfile
++++ b/Gemfile
+@@ -38,37 +38,9 @@ end
+ # configuration file
+ require 'erb'
+ require 'yaml'
+-database_file = File.join(File.dirname(__FILE__), "config/database.yml")
+-if File.exist?(database_file)
+-  database_config = YAML::load(ERB.new(IO.read(database_file)).result)
+-  adapters = database_config.values.map {|c| c['adapter']}.compact.uniq
+-  if adapters.any?
+-    adapters.each do |adapter|
+-      case adapter
+-      when 'mysql2'
+-        gem "mysql2", "~> 0.3.11", :platforms => [:mri, :mingw]
+-        gem "activerecord-jdbcmysql-adapter", :platforms => :jruby
+-      when 'mysql'
+-        gem "mysql", "~> 2.8.1", :platforms => [:mri, :mingw]
+-        gem "activerecord-jdbcmysql-adapter", :platforms => :jruby
+-      when /postgresql/
+-        gem "pg", ">= 0.11.0", :platforms => [:mri, :mingw]
+-        gem "activerecord-jdbcpostgresql-adapter", :platforms => :jruby
+-      when /sqlite3/
+-        gem "sqlite3", :platforms => [:mri, :mingw]
+-        gem "activerecord-jdbcsqlite3-adapter", :platforms => :jruby
+-      when /sqlserver/
+-        gem "tiny_tds", "~> 0.5.1", :platforms => [:mri, :mingw]
+-        gem "activerecord-sqlserver-adapter", :platforms => [:mri, :mingw]
+-      else
+-        warn("Unknown database adapter `#{adapter}` found in config/database.yml, use Gemfile.local to load your own database gems")
+-      end
+-    end
+-  else
+-    warn("No adapter found in config/database.yml, please configure it first")
+-  end
+-else
+-  warn("Please configure your config/database.yml first")
++group :production do
++  # gems specifically for Heroku go here
++  gem "pg", ">= 0.11.0"
+ end
+ 
+ group :development do
+diff --git a/config/application.rb b/config/application.rb
+index e434bd2..16250b3 100644
+--- a/config/application.rb
++++ b/config/application.rb
+@@ -11,6 +11,7 @@ end
+ 
+ module RedmineApp
+   class Application < Rails::Application
++    config.assets.initialize_on_precompile = false
+     # Settings in config/environments/* take precedence over those specified here.
+     # Application configuration should go into files in config/initializers
+     # -- all .rb files in that directory are automatically loaded.
+diff --git a/config/environment.rb b/config/environment.rb
+index 1d9a396..4e87a1c 100644
+--- a/config/environment.rb
++++ b/config/environment.rb
+@@ -7,7 +7,6 @@ if Dir.glob(File.join(vendor_plugins_dir, "*")).any?
+   $stderr.puts "Plugins in vendor/plugins (#{vendor_plugins_dir}) are no longer allowed. " +
+     "Please, put your Redmine plugins in the `plugins` directory at the root of your " +
+     "Redmine directory (#{File.join(Rails.root, "plugins")})"
+-  exit 1
+ end
+ 
+ # Initialize the rails application
