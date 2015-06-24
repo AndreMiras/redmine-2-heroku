@@ -9,6 +9,7 @@ SOURCE_DIR="redmine-$REDMINE_VERSION/"
 
 # Download Redmine and extract it
 wget -c $DOWNLOAD_URL
+rm -rf $SOURCE_DIR
 tar -xvzf $ARCHIVE_NAME
 cd $SOURCE_DIR
 
@@ -18,7 +19,10 @@ git add -A
 git commit -a -m "initial commit fresh Redmine $REDMINE_VERSION download"
 
 # Patch for Heroku
-patch -p1 --input ../files/redmine-2-heroku.patch
+patch -p1 --input ../files/redmine-2.3-allow-vendor-plugin.patch
+patch -p1 --input ../files/redmine-2.3-assets-precompile.patch
+patch -p1 --input ../files/redmine-2.3-database-gemfile.patch
+patch -p1 --input ../files/redmine-2.3-gitignore.patch
 
 # Install gems
 bundle install

@@ -1,0 +1,12 @@
+diff --git a/config/environment.rb b/config/environment.rb
+index 1d9a396..4e87a1c 100644
+--- a/config/environment.rb
++++ b/config/environment.rb
+@@ -7,7 +7,6 @@ if Dir.glob(File.join(vendor_plugins_dir, "*")).any?
+   $stderr.puts "Plugins in vendor/plugins (#{vendor_plugins_dir}) are no longer allowed. " +
+     "Please, put your Redmine plugins in the `plugins` directory at the root of your " +
+     "Redmine directory (#{File.join(Rails.root, "plugins")})"
+-  exit 1
+ end
+ 
+ # Initialize the rails application

@@ -1,34 +1,3 @@
-diff --git a/.gitignore b/.gitignore
-index 5e0f888..1610377 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -1,11 +1,7 @@
- /.project
- /.loadpath
- /config/additional_environment.rb
--/config/configuration.yml
- /config/database.yml
--/config/email.yml
--/config/initializers/session_store.rb
--/config/initializers/secret_token.rb
- /coverage
- /db/*.db
- /db/*.sqlite3
-@@ -16,7 +12,6 @@
- /log/*.log*
- /log/mongrel_debug
- /public/dispatch.*
--/public/plugin_assets
- /tmp/*
- /tmp/cache/*
- /tmp/pdf/*
-@@ -29,6 +24,4 @@
- *.rbc
- 
- /.bundle
--/Gemfile.lock
--/Gemfile.local
- 
 diff --git a/Gemfile b/Gemfile
 index 3b4d378..c4f1696 100644
 --- a/Gemfile
@@ -74,27 +43,3 @@ index 3b4d378..c4f1696 100644
  end
  
  group :development do
-diff --git a/config/application.rb b/config/application.rb
-index e434bd2..16250b3 100644
---- a/config/application.rb
-+++ b/config/application.rb
-@@ -11,6 +11,7 @@ end
- 
- module RedmineApp
-   class Application < Rails::Application
-+    config.assets.initialize_on_precompile = false
-     # Settings in config/environments/* take precedence over those specified here.
-     # Application configuration should go into files in config/initializers
-     # -- all .rb files in that directory are automatically loaded.
-diff --git a/config/environment.rb b/config/environment.rb
-index 1d9a396..4e87a1c 100644
---- a/config/environment.rb
-+++ b/config/environment.rb
-@@ -7,7 +7,6 @@ if Dir.glob(File.join(vendor_plugins_dir, "*")).any?
-   $stderr.puts "Plugins in vendor/plugins (#{vendor_plugins_dir}) are no longer allowed. " +
-     "Please, put your Redmine plugins in the `plugins` directory at the root of your " +
-     "Redmine directory (#{File.join(Rails.root, "plugins")})"
--  exit 1
- end
- 
- # Initialize the rails application
