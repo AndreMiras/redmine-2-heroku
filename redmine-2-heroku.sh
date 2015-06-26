@@ -2,10 +2,20 @@
 
 # leave blank if you want "heroku create" to pick up one for you
 HEROKU_PROJECT=""
-REDMINE_VERSION="2.3.1"
+REDMINE_VERSION="2.6.5"
 ARCHIVE_NAME="redmine-$REDMINE_VERSION.tar.gz"
 DOWNLOAD_URL="http://www.redmine.org/releases/$ARCHIVE_NAME"
 SOURCE_DIR="redmine-$REDMINE_VERSION/"
+
+
+version_lte() {
+    # "sort -V" is available on coreutils-7
+    [  "$1" = "$(echo -e "$1\n$2" | sort -V | head -n1)" ]
+}
+
+version_lt() {
+    [ "$1" = "$2" ] && return 1 || version_lte $1 $2
+}
 
 # Download Redmine and extract it
 wget -c $DOWNLOAD_URL
@@ -21,8 +31,14 @@ git commit -a -m "initial commit fresh Redmine $REDMINE_VERSION download"
 # Patch for Heroku
 patch -p1 --input ../files/redmine-2.3-allow-vendor-plugin.patch
 patch -p1 --input ../files/redmine-2.3-assets-precompile.patch
-patch -p1 --input ../files/redmine-2.3-database-gemfile.patch
-patch -p1 --input ../files/redmine-2.3-gitignore.patch
+if version_lt $REDMINE_VERSION 2.6.5
+then
+    patch -p1 --input ../files/redmine-2.3-database-gemfile.patch
+    patch -p1 --input ../files/redmine-2.3-gitignore.patch
+else
+    patch -p1 --input ../files/redmine-2.6.5-database-gemfile.patch
+    patch -p1 --input ../files/redmine-2.6.5-gitignore.patch
+fi
 
 # Install gems
 bundle install
